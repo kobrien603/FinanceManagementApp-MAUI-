@@ -1,0 +1,40 @@
+﻿@page "/stocks"
+@using FinanceManagementApp.ViewModels
+@implements IDisposable
+
+<h3>Stocks</h3>
+
+@if (StockService.Stocks == null)
+{
+    <p><em>Loading...</em></p>
+}
+else
+{
+    <div class="row">
+        @foreach (var stock in StockService.Stocks.Values)
+        {
+            if (stock != null)
+            {
+                <div class="col-auto">
+                    <Stock StockData="stock" />
+                </div>
+            }
+        }
+    </div>
+}
+
+@code {
+    [Inject]
+    public StocksViewModel StockService { get; set; }
+
+    protected override void OnInitialized()
+    {
+        StockService.OnChange += StateHasChanged;
+        StockService.Init();
+    }
+
+    public void Dispose()
+    {
+        StockService.OnChange -= StateHasChanged;
+    }
+}
